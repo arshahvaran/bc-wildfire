@@ -24,3 +24,9 @@ distributed.
 ## Licence
 
 To be determined (see the manuscript's data and software availability statement).
+
+## Repository layout
+
+    app/    the Earth Engine App source (paste app/app.js into the Code Editor)
+    docs/   asset_upload_guide.md - step-by-step raster ingestion instructions
+    tools/  verify_assets.py - post-upload verification (run from the gee-env conda env)
