@@ -27,9 +27,7 @@ version: '1.0'
 date-released: '2026-08-22'
 repository-code: https://github.com/arshahvaran/bc-wildfire
 url: https://ee-arshahvaran.projects.earthengine.app/view/bc-wildfire
-license:
-  - MIT
-  - CC-BY-NC-4.0
+license: CC-BY-NC-4.0
 keywords:
   - wildfire susceptibility
   - British Columbia
