@@ -385,6 +385,30 @@ var probeImage = ee.Image.cat([
 /** Transect sampling image: susceptibility and class ONLY. */
 var transectImage = ee.Image.cat([susceptibility, suscClass]);
 
+/*
+ * The transect chart's columns, with their types declared rather than inferred.
+ * ui.Chart types a column from its first non-null value and falls back to "string"
+ * for a column that holds no values at all, and Google Charts then refuses to draw
+ * it: "Data column(s) for axis #0 cannot be of type string". A line drawn entirely
+ * over water, over a gap in the data, or outside the province produces exactly that
+ * empty column, which is why the error came and went. Declaring the types here
+ * makes it impossible.
+ */
+var TRANSECT_COLUMNS = [
+  {label: 'Distance (km)', type: 'number'},
+  {label: 'Susceptibility', type: 'number'},
+  {label: 'Class', type: 'number'}
+];
+
+/**
+ * A finite number, or null. Earth Engine serialises NaN and Infinity as the
+ * strings "NaN" and "Infinity", and one of those in a column would type the whole
+ * column as text in the same way a missing value does.
+ */
+function finiteOrNull(value) {
+  return (typeof value === 'number' && isFinite(value)) ? value : null;
+}
+
 /* ===== 3. MAP SETUP - basemap, controls, zoom limits, layers, outline ===== */
 
 /* Subdued road-map style (Google Maps styler array). */
@@ -586,12 +610,39 @@ function runTransect(line) {
     crs: 'EPSG:3005',
     crsTransform: CONFIG.nativeTransform
   });
-  var chart = ui.Chart.feature.byFeature({
-        features: sampled, xProperty: 'distance_km',
-        yProperties: ['susceptibility', 'class']
-      })
-      .setChartType('LineChart')
-      .setOptions({
+  sampled.evaluate(function (fc, error) {
+    if (error) {
+      setResults([errorLabel('Transect sampling failed: ' + error)]);
+      return;
+    }
+    var feats = (fc && fc.features) || [];
+    var rows = [];
+    var withData = 0;
+    for (var i = 0; i < feats.length; i++) {
+      var props = feats[i].properties || {};
+      var km = finiteOrNull(props.distance_km);
+      if (km === null) continue;               // no distance, nothing to plot against
+      var value = finiteOrNull(props.susceptibility);
+      var klass = finiteOrNull(props['class']);
+      if (value !== null || klass !== null) withData++;
+      rows.push([km, value, klass]);
+    }
+    if (rows.length < 2) {
+      setResults([ui.Label('That line is shorter than one 26 m pixel. Draw a longer one.',
+                           STYLES.hint)]);
+      return;
+    }
+    if (withData === 0) {
+      setResults([ui.Label(
+          'Nothing to chart: no mapped pixel lies under that line. The surface covers ' +
+          'land inside British Columbia, so a line drawn over water, over a gap in the ' +
+          'data or outside the province has no values to read.', STYLES.hint)]);
+      return;
+    }
+    var chart = ui.Chart({
+      dataTable: [TRANSECT_COLUMNS].concat(rows),
+      chartType: 'LineChart',
+      options: {
         title: 'Susceptibility along transect',
         hAxis: {title: 'Distance (km)'},
         vAxes: {
@@ -606,24 +657,28 @@ function runTransect(line) {
         interpolateNulls: true,
         legend: {position: 'top'},
         chartArea: {left: 45, right: 45}
-      });
-  chart.style().set({stretch: 'horizontal', height: '240px'});
-  var spacingNote = ui.Label('Computing sample spacing...', STYLES.note);
-  setResults([
-    chart,
-    ui.Label('Use the chart\'s pop-out button to download CSV (susceptibility and class only).',
-             STYLES.note),
-    spacingNote
-  ]);
-  ee.Dictionary({spacing_m: spacing, n_points: distances.size()})
-      .evaluate(function (d, error) {
-        if (error) {
-          spacingNote.setValue('Sampling details unavailable: ' + error);
-        } else {
-          spacingNote.setValue('Sampled ' + d.n_points + ' points at ' + Math.round(d.spacing_m) +
-                               ' m spacing (cap: 400 points, minimum spacing 26 m).');
-        }
-      });
+      }
+    });
+    chart.style().set({stretch: 'horizontal', height: '240px'});
+    /* Spacing comes from the rows themselves, so the note costs no second call. */
+    var spacingM = Math.round((rows[1][0] - rows[0][0]) * 1000);
+    var gaps = rows.length - withData;
+    var widgets = [
+      chart,
+      ui.Label('Use the chart\'s pop-out button to download CSV (susceptibility and ' +
+               'class only).', STYLES.note),
+      ui.Label('Sampled ' + rows.length + ' points at ' + spacingM + ' m spacing (cap: ' +
+               CONFIG.transect.maxPoints + ' points, minimum spacing ' +
+               CONFIG.transect.minSpacingM + ' m).', STYLES.note)
+    ];
+    if (gaps > 0) {
+      widgets.push(ui.Label(
+          gaps === 1 ? 'One of them falls outside the mapped surface and is drawn as a gap.'
+                     : gaps + ' of them fall outside the mapped surface and are drawn as gaps.',
+          STYLES.note));
+    }
+    setResults(widgets);
+  });
 }
 
 /* ===== 7. POLYGON TOOL - area-dependent scale, product statistics only ===== */

@@ -287,6 +287,28 @@ gives it (15 px here, against the 11 px a select would have forced). The one con
 kept its widget is the opacity slider, whose read-out is also drawn in the root and so
 does take a font size.
 
+## Why the transect chart declares its column types
+
+`ui.Chart` builds its DataTable with `arrayToDataTable`, which infers a column's type
+from that column's first non-null value and falls back to `"string"` for a column that
+holds no values at all:
+
+    O(c.cols, function(m, n){ m.type == null && (m.type = g[n] || "string") })
+
+Google Charts then refuses the chart with *"Data column(s) for axis #0 cannot be of type
+string"*. A transect drawn entirely over water, over a gap in the data, or outside the
+province samples nothing but masked pixels, so both value columns arrive empty and get
+typed as text - which is why the error appeared and disappeared depending on where the
+line was drawn, and why it was easiest to hit zoomed in. Verified against the live assets:
+a line in the open Pacific returns 328 points, every value null, with the property keys
+present.
+
+The chart is therefore built from an explicit `[{label, type: 'number'}, ...]` header and
+rows evaluated client-side, with every value passed through `finiteOrNull()`. That also
+covers Earth Engine sending NaN and Infinity as the strings `"NaN"` and `"Infinity"`,
+which would type a column as text in the same way. A line with nothing under it now gets a
+sentence saying so, and a line shorter than one pixel gets another.
+
 ## Why the content sits in a fixed-width column
 
 The control panel scrolls, and a scrollbar takes its width from the inside of the element
