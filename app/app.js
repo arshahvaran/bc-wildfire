@@ -89,7 +89,10 @@ var CONFIG = {
  * This array is the ONLY enumeration of predictor bands in the app.
  * Each entry: stable band key, display label, formatter (value -> string).
  */
-var PREDICTORS = Object.freeze([
+// NOTE: the Code Editor's JavaScript sandbox has no Object.freeze, so this
+// allowlist is a plain array. It is still the ONLY place predictor bands are
+// enumerated - never iterate bandNames() to build this list.
+var PREDICTORS = [
   {key: 'ghm', label: 'Human modification (gHM)', format: function (v) { return v.toFixed(2); }},
   {key: 'road_density', label: 'Road density', format: function (v) { return v.toFixed(2) + ' km/km²'; }},
   {key: 'dist_built', label: 'Distance to built areas', format: function (v) { return (v / 1000).toFixed(2) + ' km'; }},
@@ -102,7 +105,7 @@ var PREDICTORS = Object.freeze([
     var name = CONFIG.fuelNames[Math.round(v)];
     return name ? name : 'Code ' + Math.round(v);
   }}
-]);
+];
 
 var EM_DASH = '—';
 
@@ -440,13 +443,14 @@ function renderPolygonStats(result, areaKm2, scale) {
   var hist = result['class'] || {};
   var counts = [0, 0, 0, 0, 0];
   var total = 0;
-  Object.keys(hist).forEach(function (key) {
+  for (var key in hist) {
+    if (!hist.hasOwnProperty(key)) continue;
     var cls = Math.round(parseFloat(key));
     if (cls >= 1 && cls <= 5) {
       counts[cls - 1] += hist[key];
       total += hist[key];
     }
-  });
+  }
   for (var i = 0; i < 5; i++) {
     var pct = total > 0 ? (100 * counts[i] / total).toFixed(1) : '0.0';
     card.push(ui.Panel({
@@ -515,10 +519,11 @@ var toolButtons = {};  // key -> ui.Button, filled in section 9
  */
 function setActiveTool(name) {
   activeTool = name;
-  Object.keys(toolButtons).forEach(function (key) {
+  for (var key in toolButtons) {
+    if (!toolButtons.hasOwnProperty(key)) continue;
     toolButtons[key].style().set(
         key === name ? TOOL_ACTIVE_STYLE : TOOL_INACTIVE_STYLE);
-  });
+  }
   drawingTools.stop();
   clearDrawings();
   setResults([ui.Label(TOOL_HINTS[name], STYLES.hint)]);
