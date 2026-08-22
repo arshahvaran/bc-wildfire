@@ -69,6 +69,11 @@ var CONFIG = {
     675: 'M-1/M-2 Boreal mixedwood, 75% conifer'
   },
   nativeScale: 26,        // reduceRegion scale for the 25.86 m product
+  // The assets' exact grid. Sampling with this transform reads the identical
+  // pixel the source GeoTIFFs hold, byte-faithfully; a rounded scale of 26 m
+  // can land one pixel off wherever the surface has a gradient.
+  nativeTransform: [25.860966463822098, 0, 34162.95412826538,
+                    0, -25.860966463822098, 1736292.499123845],
   minZoom: 4,
   maxZoom: 13,            // ~11 m/px at 55 N: modest overzoom for a 26 m map
   clickDebounceMs: 300,
@@ -247,7 +252,7 @@ function handleMapClick(coords) {
   var point = ee.Geometry.Point([coords.lon, coords.lat]);
   probeImage
       .reduceRegion({reducer: ee.Reducer.first(), geometry: point,
-                     scale: CONFIG.nativeScale})
+                     crs: 'EPSG:3005', crsTransform: CONFIG.nativeTransform})
       .evaluate(function (values, error) {
         if (requestId !== inspectRequestId || activeTool !== 'inspect') return;
         if (error) {
@@ -334,7 +339,8 @@ function runTransect(line) {
   var sampled = transectImage.reduceRegions({
     collection: samplePoints,
     reducer: ee.Reducer.first(),
-    scale: CONFIG.nativeScale
+    crs: 'EPSG:3005',
+    crsTransform: CONFIG.nativeTransform
   });
   var chart = ui.Chart.feature.byFeature({
         features: sampled, xProperty: 'distance_km',
