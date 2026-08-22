@@ -163,6 +163,7 @@ bc-wildfire/
 │   └── README.md                 how to paste, run and publish the script
 ├── assets/
 │   ├── logo.png / logo.svg       project logo
+│   ├── icon.png                  square mark, used in the app panel header
 │   └── thumbnail.png / .svg      app and repository thumbnail
 ├── docs/
 │   ├── asset_upload_guide.md     ingesting the 13 rasters through the Code Editor

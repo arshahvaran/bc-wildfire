@@ -187,6 +187,21 @@ After running the script, re-check the app in a private browsing window (section
   the ingested rasters only. The published app reads Earth Engine assets, so the local files
   can move without affecting the live app.
 
+## First-paint time
+
+Two things decide how long the app looks blank.
+
+The first is `Map.centerObject`. It evaluates the object's centroid on the server before
+the map can position itself, measured at **18.6 s** for the BC boundary, during which the
+app shows nothing useful. The app therefore calls `Map.setCenter` with the coordinates that
+call returned. Any fixed extent should be hard-coded the same way; reserve `centerObject`
+for geometry that is not known until run time.
+
+The second is the loading card, which must be created before any Earth Engine call, not
+after `Map.addLayer`. It is section 1b of `app/app.js` for that reason. Nothing can be shown
+earlier than that: until the Code Editor sandbox has loaded and run the script, the page is
+Earth Engine's own shell and no app code has executed.
+
 ## Header logo and the browser tab title
 
 Two pieces of app chrome behave in ways worth recording.
@@ -218,6 +233,11 @@ Earth Engine provides no redirect. The alternatives are to accept the slug as th
 title, which is what nearly every published app does, or to wrap the app in a page you
 host whose own title and URL you control.
 
-The application therefore carries its full name inside the interface instead: the control
-panel is headed by the logo image, inlined as a data URI because `ui.Label`'s `imageUrl`
-accepts only data URIs and gstatic.com icons.
+The application therefore carries its full name inside the interface instead. The control
+panel is headed by the square mark from `assets/icon.png`, inlined as a data URI because
+`ui.Label`'s `imageUrl` accepts only data URIs and gstatic.com icons, with the title set
+beside it as text.
+
+A label's `style.width` **clips** its image, it does not scale it, so an inlined image must
+be shipped at the exact size it is to appear at. A wordmark sized for a wider panel simply
+runs off the edge with its right-hand end cut away.
