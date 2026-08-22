@@ -123,14 +123,16 @@ var STYLES = {
 /* ===== 2. DATA - images renamed to stable keys ===== */
 
 /*
- * The province outline comes from the public GAUL level-1 dataset, not from a
- * project asset. The old bc_shapefile_gee asset is the study-area / raster
- * footprint: its southern bound reaches 47.79 N, so the drawn outline cut
- * across Washington State. GAUL gives the real province (2 features, lon
- * -139.05..-114.05, lat 48.30..60.00) and needs no asset permissions.
+ * The province outline is the authoritative BC government boundary, uploaded as a
+ * table asset. Two earlier sources were rejected: bc_shapefile_gee is the study-area
+ * / raster footprint whose southern bound reaches 47.79 N, so it drew a line across
+ * Washington State; and the public GAUL level-1 province is split into two features,
+ * whose shared edge printed as a spurious vertical line through the province. The
+ * uploaded boundary is a single feature simplified to a 25 m tolerance
+ * (309,003 vertices, inside Earth Engine's 1,000,000-vertex ingest limit).
  */
-var boundary = ee.FeatureCollection('FAO/GAUL/2015/level1')
-    .filter(ee.Filter.eq('ADM1_NAME', 'British Columbia / Colombie-Britannique'));
+var boundary = ee.FeatureCollection(
+    'projects/ee-arshahvaran/assets/wildfire_1/bc_boundary');
 var susceptibility = ee.Image(CONFIG.assets.susceptibility).rename('susceptibility');
 var suscClass = ee.Image(CONFIG.assets.susceptibilityClass).rename('class');
 var aoaMask = ee.Image(CONFIG.assets.aoaMask).rename('aoa');
