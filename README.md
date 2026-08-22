@@ -162,9 +162,9 @@ bc-wildfire/
 │   ├── app.js                    the complete Earth Engine App source (Code Editor dialect)
 │   └── README.md                 how to paste, run and publish the script
 ├── assets/
-│   ├── logo.png / logo.svg       project logo
-│   ├── icon.png                  square mark, used in the app panel header
-│   └── thumbnail.png / .svg      app and repository thumbnail
+│   ├── logo.png / logo.svg       wordmark: the mark beside the project name
+│   ├── icon.png / icon.svg       square mark, used in the app panel header
+│   └── thumbnail.png / .svg      app and repository thumbnail (mark only, no text)
 ├── docs/
 │   ├── asset_upload_guide.md     ingesting the 13 rasters through the Code Editor
 │   └── deployment.md             publishing the app and sharing the assets with it

@@ -270,4 +270,22 @@ code does:
   that renders the text. **So `fontSize` on a `ui.Select` or a `ui.Button` has no visible
   effect.** The only way to control the size of that text is to build the control out of
   widgets whose text lives in the root element: `ui.Label` and `ui.Checkbox` both honour
-  `fontSize`, so a checkbox group can replace a select where the text size matters.
+  `fontSize`.
+
+The app therefore has no selects and no buttons. Layer, Basemap and Tools are checkbox
+groups driven as radio buttons by `radioGroup()` in section 9: exactly one row is on, and
+clicking the row already on leaves it on. A checkbox's label is a `<span class="label">`
+inside the widget root with no font rule of its own, so the label takes the size the app
+gives it (15 px here, against the 11 px a select would have forced). The one control that
+kept its widget is the opacity slider, whose read-out is also drawn in the root and so
+does take a font size.
+
+## Why the content sits in a fixed-width column
+
+The control panel scrolls, and a scrollbar takes its width from the inside of the element
+that scrolls. Opening the About section made the panel taller than the window, the
+scrollbar appeared, and every stretched widget in the panel lost about 15 px - the whole
+interface visibly re-flowed on a click. `ui` exposes no `overflow` style, so the scrollbar
+cannot be pinned on. Instead all content sits in an inner panel of fixed width (364 px)
+inside the 400 px panel: the scrollbar still comes and goes, but nothing inside changes
+size, because nothing inside depends on the panel's remaining width.
