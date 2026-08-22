@@ -96,9 +96,7 @@ The app is a viewer for the published products, not a data release:
 ### 2.1 Open the live app
 
 Go to <https://ee-arshahvaran.projects.earthengine.app/view/bc-wildfire>. No Earth Engine
-account and no sign-in is needed. The app was first published at
-`https://ee-arshahvaran.projects.earthengine.app/view/wildfire-susceptibility-bc`; that older
-address may still be in circulation, and both point at the same application.
+account and no sign-in is needed.
 
 Start with the **Inspect** tool, click anywhere inside British Columbia, then switch layers or
 tools from the left panel. The **About this app** section at the foot of the panel repeats the

@@ -35,14 +35,11 @@ editor; you must republish (section 5).
 
     https://ee-arshahvaran.projects.earthengine.app/view/<app-name>
 
-so the name is a public, quotable identifier, not a label. This app was first published as
-`wildfire-susceptibility-bc` and is being renamed to `bc-wildfire`, which gives:
+so the name is a public, quotable identifier, not a label. An app's URL cannot be edited after
+creation: changing it means publishing a new app and deleting the old one, which is how this app
+arrived at its address:
 
-    current after renaming:
     https://ee-arshahvaran.projects.earthengine.app/view/bc-wildfire
-
-    original address, still in circulation:
-    https://ee-arshahvaran.projects.earthengine.app/view/wildfire-susceptibility-bc
 
 Set the display title to **BC Wildfire Susceptibility Explorer**, which is the name used in
 the app panel, the repository and the paper.
@@ -125,7 +122,7 @@ ASSET_NAMES = [
 ASSET_IDS = (
     [FOLDER]
     + [FOLDER + "/" + name for name in ASSET_NAMES]
-    + ["projects/ee-arshahvaran/assets/bc_shapefile_gee"]
+    + ["projects/ee-arshahvaran/assets/wildfire_1/bc_boundary"]
 )
 
 for asset_id in ASSET_IDS:
@@ -164,8 +161,13 @@ Notes on the script:
   error mentioning owners, drop that key and retry.
 * If `ee.data.setAssetAcl` rejects a dictionary in your version of the client library, wrap it
   with `json.dumps(update)`.
-* The boundary table `bc_shapefile_gee` lives outside the `wildfire_1` folder and is easy to
-  forget. Without it the app draws no provincial outline and `Map.centerObject` fails.
+* The boundary table `wildfire_1/bc_boundary` is easy to forget. Without it the app draws no
+  provincial outline and `Map.centerObject` fails.
+* EVERY app has its own service account, created with the app. Deleting an app and publishing a
+  replacement produces a NEW identity, and the old grants become dead references, so every asset
+  must be re-granted. Read the current identity off the folder rather than assuming it:
+  `ee.data.getAssetAcl(FOLDER)["readers"]`. This app's identity is
+  `serviceAccount:bc-wildfire-fd3828b3ed657418f2@ee-arshahvaran.iam.gserviceaccount.com`.
 
 After running the script, re-check the app in a private browsing window (section 3).
 
@@ -184,3 +186,38 @@ After running the script, re-check the app in a private browsing window (section
 * **Nothing is served from the local disk.** `E:\publications\wildfire_1\data` is the source of
   the ingested rasters only. The published app reads Earth Engine assets, so the local files
   can move without affecting the live app.
+
+## Header logo and the browser tab title
+
+Two pieces of app chrome behave in ways worth recording.
+
+**The header logo** replaces the "Google Earth Engine Apps" wordmark in the top-left of
+the header bar; the wordmark then moves to the right-hand side. It is stored as app
+configuration, not in the script, and it is set on the last step of the publish wizard
+("Publication and Viewers" > LOGO tab). Uploading the image into the well does NOT save
+it: the wizard must be carried through to the final PUBLISH or UPDATE button, or the
+configuration is never written. Earth Engine copies the file to its own image service at
+publish time rather than linking yours. RGBA PNG with transparency works and is displayed
+at exactly 50 px tall, clipped beyond about 400 px wide, so keep the artwork close to 8:1.
+`assets/logo.png` in this repository is cut to those proportions.
+
+To check whether a logo is actually stored, fetch the app page and look at the header
+markup rather than trusting the browser, which caches the image for a day:
+
+    curl -s https://ee-arshahvaran.projects.earthengine.app/view/bc-wildfire | grep -o 'id="logo"[^>]*'
+
+An app with a logo renders `id="logo" class="appLogo"` and an `lh3.googleusercontent.com`
+image source. An app without one renders a bare `id="logo"` wrapping a link to
+earthengine.app. That test is server-side and immune to caching.
+
+**The browser tab title** is the app name, which is the same single field that generates
+the URL slug. There is no separate title setting, the Gallery description does not affect
+it, and the Code Editor sandbox exposes no DOM, so the script cannot change it either.
+Renaming the app changes the title and the URL together and breaks the old address, since
+Earth Engine provides no redirect. The alternatives are to accept the slug as the tab
+title, which is what nearly every published app does, or to wrap the app in a page you
+host whose own title and URL you control.
+
+The application therefore carries its full name inside the interface instead: the control
+panel is headed by the logo image, inlined as a data URI because `ui.Label`'s `imageUrl`
+accepts only data URIs and gstatic.com icons.

@@ -53,8 +53,8 @@ than a rounded scale, so a click reads the same pixel the source GeoTIFF holds. 
 3. Paste the whole of `app.js` and click **Save**.
 4. Click **Run**.
 
-The script expects the 13 images under `projects/ee-arshahvaran/assets/wildfire_1` and the
-boundary table `projects/ee-arshahvaran/assets/bc_shapefile_gee`. If those are not in place,
+The script expects the 13 images and the boundary table `bc_boundary`, all under
+`projects/ee-arshahvaran/assets/wildfire_1`. If those are not in place,
 follow [`docs/asset_upload_guide.md`](../docs/asset_upload_guide.md) and then run
 `tools/verify_assets.py`.
 
