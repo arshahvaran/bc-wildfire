@@ -242,5 +242,32 @@ rather than under the mark.
 A label's `style.width` **clips** its image, it does not scale it, so an inlined image must
 be shipped at the exact size it is to appear at. A wordmark sized for a wider panel simply
 runs off the edge with its right-hand end cut away. The mark is therefore inlined at
-72 x 72, its display size: **to resize it, regenerate the base64 string at the new size**,
+107 x 107, its display size: **to resize it, regenerate the base64 string at the new size**,
 because widening the label alone only reveals more empty space or crops the image.
+
+107 px is not a taste call. Beside a mark that size the title wraps to two lines and the
+caption to three, and that text block measures exactly 107 px tall with Earth Engine's own
+stylesheet (`html, body {line-height: normal}`, Roboto), so the foot of the mark lands on
+the last line of the caption. It measures 107 px at every panel content width from 360 to
+384 px, which is the range the panel moves through as its scrollbar appears and vanishes,
+so the alignment cannot be broken by content elsewhere in the panel.
+
+## What Earth Engine's stylesheet fixes, and you cannot
+
+Two rules in `earthengine.app/css/app.css` decide more of the panel's look than the app
+code does:
+
+* **Every widget is created with `margin: 8px` on all four sides** (`ui.Widget`'s default
+  style, in `earthengine.app/javascript/main.js`). That is what held the selects and the
+  opacity slider in from the panel's content edges while the legend ramp and the tool
+  buttons, which set their own margins, sat flush. The app now sets `margin: '0 0 2px 0'`
+  on all three so every control shares one left and right edge.
+* **Select captions and button labels are pinned at 11 px bold** —
+  `.goog-flat-menu-button {font-size: 11px; font-weight: 700; line-height: 27px}` and
+  `.jfk-button {font-size: 11px}`. A widget's `style` dictionary is applied to the
+  widget's own root element only (`ZE()` in main.js has a custom handler for `cursor`
+  and nothing else), and an inherited font size cannot beat a class rule on the child
+  that renders the text. **So `fontSize` on a `ui.Select` or a `ui.Button` has no visible
+  effect.** The only way to control the size of that text is to build the control out of
+  widgets whose text lives in the root element: `ui.Label` and `ui.Checkbox` both honour
+  `fontSize`, so a checkbox group can replace a select where the text size matters.
