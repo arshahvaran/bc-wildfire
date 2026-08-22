@@ -49,9 +49,10 @@ is billed for the app's Earth Engine usage and the project that owns the app's s
 account, so it must be the project that owns the assets as well.
 
 **Step 4, set access and appearance.** Leave the app readable by anyone with the link, which
-is what makes it citable from the paper. Add the description and the thumbnail from `assets/`
-if you want the app listed with an image. Do **not** tick any option that makes the underlying
-assets public: the app needs read access, the world does not.
+is what makes it citable from the paper. Add the description and, for the thumbnail,
+`assets/logo.png` - the square mark, which is the same file the app draws in its panel.
+Do **not** tick any option that makes the underlying assets public: the app needs read
+access, the world does not.
 
 Click **PUBLISH**. Provisioning takes a few minutes, after which the app URL resolves.
 
@@ -214,7 +215,13 @@ it: the wizard must be carried through to the final PUBLISH or UPDATE button, or
 configuration is never written. Earth Engine copies the file to its own image service at
 publish time rather than linking yours. RGBA PNG with transparency works and is displayed
 at exactly 50 px tall, clipped beyond about 400 px wide, so keep the artwork close to 8:1.
-`assets/logo.png` in this repository is cut to those proportions.
+`assets/logo_earthengine.png` is cut to those proportions; `assets/logo.png` is the square
+mark with no text and belongs in the thumbnail field, not here.
+
+Both are also kept as SVG, which is the source both PNGs are rendered from. Upload the
+PNGs: the wizard's image fields take raster formats, and Earth Engine's own URL sanitiser
+refuses `data:image/svg+xml` (its allowed list is bmp, gif, jpeg, png, tiff, webp, ico,
+heic, heif, avif), which is why the panel mark inside `app.js` is an inlined PNG too.
 
 To check whether a logo is actually stored, fetch the app page and look at the header
 markup rather than trusting the browser, which caches the image for a day:
@@ -234,7 +241,7 @@ title, which is what nearly every published app does, or to wrap the app in a pa
 host whose own title and URL you control.
 
 The application therefore carries its full name inside the interface instead. The control
-panel is headed by the square mark from `assets/icon.png`, inlined as a data URI because
+panel is headed by the square mark from `assets/logo.png`, inlined as a data URI because
 `ui.Label`'s `imageUrl` accepts only data URIs and gstatic.com icons. The title and the
 caption sit in a vertical panel beside it, so the caption begins at the title's left edge
 rather than under the mark.
