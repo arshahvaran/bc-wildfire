@@ -23,6 +23,8 @@ authors:
     family-names: Sadegh
   - given-names: Amir
     family-names: AghaKouchak
+version: '1.0'
+date-released: '2026-08-22'
 repository-code: https://github.com/arshahvaran/bc-wildfire
 url: https://ee-arshahvaran.projects.earthengine.app/view/bc-wildfire
 license:
