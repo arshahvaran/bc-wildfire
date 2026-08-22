@@ -80,7 +80,7 @@ var CONFIG = {
   polygon: {largeAreaKm2: 200000, smallScaleM: 100, largeScaleM: 300,
             maxPixels: 1e9, areaMaxErrorM: 100},
   defaultOpacity: 0.9,
-  panelWidth: '340px'
+  panelWidth: '400px'
 };
 
 /**
@@ -110,14 +110,14 @@ var EM_DASH = '—';
 
 /* Shared widget styles. */
 var STYLES = {
-  title: {fontSize: '18px', fontWeight: 'bold', margin: '0 0 2px 0'},
-  caption: {fontSize: '12px', color: '#666666', margin: '0 0 8px 0'},
-  section: {fontSize: '13px', fontWeight: 'bold', margin: '10px 0 2px 0', color: '#444444'},
-  subhead: {fontSize: '13px', fontWeight: 'bold', margin: '8px 0 4px 0'},
-  hint: {fontSize: '12px', color: '#666666', margin: '4px 0'},
-  note: {fontSize: '11px', color: '#888888', margin: '4px 0'},
-  error: {fontSize: '12px', color: '#cc0000', margin: '4px 0'},
-  body: {fontSize: '12px', color: '#555555', margin: '4px 0 0 0'}
+  title: {fontSize: '24px', fontWeight: 'bold', margin: '0 0 4px 0'},
+  caption: {fontSize: '15px', color: '#666666', margin: '0 0 12px 0'},
+  section: {fontSize: '18px', fontWeight: 'bold', margin: '14px 0 4px 0', color: '#333333'},
+  subhead: {fontSize: '17px', fontWeight: 'bold', margin: '12px 0 6px 0'},
+  hint: {fontSize: '15px', color: '#666666', margin: '6px 0'},
+  note: {fontSize: '14px', color: '#888888', margin: '6px 0'},
+  error: {fontSize: '15px', color: '#cc0000', margin: '6px 0'},
+  body: {fontSize: '15px', color: '#555555', margin: '6px 0 0 0'}
 };
 
 /* ===== 2. DATA - images renamed to stable keys ===== */
@@ -182,7 +182,7 @@ Map.style().set('cursor', 'crosshair');
 // Zoom 5 fills the map with the province: BC spans 25 degrees of longitude and
 // 11.7 of latitude, about 560 x 455 px at zoom 5, so the outline sits inside a
 // normal viewport with a small margin. Zoom 6 would crop the north and east.
-Map.centerObject(boundary, 5);
+Map.centerObject(boundary, 6);
 
 /** Display order and definitions of the three product layers. */
 var LAYER_KEYS = ['continuous', 'classes', 'aoa'];
@@ -220,7 +220,7 @@ Map.addLayer(
 
 /* ===== 4. RESULTS PANEL helpers ===== */
 
-var resultsPanel = ui.Panel({style: {margin: '4px 0 0 0'}});
+var resultsPanel = ui.Panel({style: {margin: '6px 0 0 0', stretch: 'horizontal'}});
 
 /** Replaces the contents of the results panel. */
 function setResults(widgets) {
@@ -238,8 +238,8 @@ function row(name, value) {
   return ui.Panel({
     layout: ui.Panel.Layout.flow('horizontal'),
     widgets: [
-      ui.Label(name, {margin: '2px 0', fontSize: '12px', color: '#555555', stretch: 'horizontal'}),
-      ui.Label(value, {margin: '2px 0', fontSize: '12px', textAlign: 'right'})
+      ui.Label(name, {margin: '3px 0', fontSize: '15px', color: '#555555', stretch: 'horizontal'}),
+      ui.Label(value, {margin: '3px 0', fontSize: '15px', textAlign: 'right'})
     ]
   });
 }
@@ -249,7 +249,7 @@ function classChip(idx, text) {
   return ui.Label(text, {
     backgroundColor: CONFIG.classPalette[idx],
     color: CONFIG.classTextColors[idx],
-    padding: '2px 8px', margin: '2px 0', fontSize: '12px'
+    padding: '3px 10px', margin: '3px 0', fontSize: '15px'
   });
 }
 
@@ -296,9 +296,9 @@ function renderReadout(coords, values) {
   card.push(ui.Panel({
     layout: ui.Panel.Layout.flow('horizontal'),
     widgets: [
-      ui.Label('Class', {margin: '4px 0 2px 0', fontSize: '12px', color: '#555555', stretch: 'horizontal'}),
+      ui.Label('Class', {margin: '5px 0 3px 0', fontSize: '15px', color: '#555555', stretch: 'horizontal'}),
       (idx >= 0 && idx < 5) ? classChip(idx, CONFIG.classNames[idx])
-                            : ui.Label(EM_DASH, {margin: '4px 0 2px 0', fontSize: '12px'})
+                            : ui.Label(EM_DASH, {margin: '5px 0 3px 0', fontSize: '15px'})
     ]
   }));
   if (values.aoa === 1) {
@@ -306,7 +306,7 @@ function renderReadout(coords, values) {
   } else if (values.aoa === 0) {
     card.push(ui.Label(
         'Extrapolation ' + EM_DASH + ' predictor values here are outside the training range',
-        {fontSize: '12px', color: CONFIG.aoaExtrapolationColor, margin: '4px 0 0 0'}));
+        {fontSize: '15px', color: CONFIG.aoaExtrapolationColor, margin: '5px 0 0 0'}));
   } else {
     card.push(row('Area of Applicability', EM_DASH));
   }
@@ -314,7 +314,7 @@ function renderReadout(coords, values) {
     card.push(ui.Label('Confident: a single outcome survives at 90% coverage', STYLES.body));
   } else if (values.conformal === 1) {
     card.push(ui.Label('Ambiguous: both outcomes retained',
-                       {fontSize: '12px', color: '#b26a00', margin: '2px 0 0 0'}));
+                       {fontSize: '15px', color: '#b26a00', margin: '3px 0 0 0'}));
   } else {
     card.push(row('Conformal prediction', EM_DASH));
   }
@@ -469,7 +469,7 @@ function renderPolygonStats(result, areaKm2, scale) {
       layout: ui.Panel.Layout.flow('horizontal'),
       widgets: [
         classChip(i, CONFIG.classNames[i]),
-        ui.Label(pct + '%', {margin: '4px 0 0 8px', fontSize: '12px'})
+        ui.Label(pct + '%', {margin: '6px 0 0 10px', fontSize: '15px'})
       ]
     }));
   }
@@ -583,16 +583,16 @@ var basemapSelect = ui.Select({
 });
 
 /* Legend panel, re-rendered for the active layer. */
-var legendPanel = ui.Panel({style: {margin: '2px 0 0 0'}});
+var legendPanel = ui.Panel({style: {margin: '2px 0 0 0', stretch: 'horizontal'}});
 
 /** A legend row: colour swatch + text. */
 function swatchRow(color, text) {
   return ui.Panel({
     layout: ui.Panel.Layout.flow('horizontal'),
     widgets: [
-      ui.Label('', {backgroundColor: color, padding: '8px', margin: '0 8px 0 0',
+      ui.Label('', {backgroundColor: color, padding: '9px', margin: '0 10px 0 0',
                     border: '1px solid #999999'}),
-      ui.Label(text, {margin: '2px 0 0 0', fontSize: '12px'})
+      ui.Label(text, {margin: '3px 0 0 0', fontSize: '15px'})
     ],
     style: {margin: '0 0 3px 0'}
   });
@@ -611,10 +611,10 @@ function renderLegend(key) {
     var rampLabels = ui.Panel({
       layout: ui.Panel.Layout.flow('horizontal'),
       widgets: [
-        ui.Label('0', {margin: '0', fontSize: '11px'}),
-        ui.Label('0.5', {margin: '0', fontSize: '11px', textAlign: 'center',
+        ui.Label('0', {margin: '0', fontSize: '14px'}),
+        ui.Label('0.5', {margin: '0', fontSize: '14px', textAlign: 'center',
                          stretch: 'horizontal'}),
-        ui.Label('1', {margin: '0', fontSize: '11px'})
+        ui.Label('1', {margin: '0', fontSize: '14px'})
       ]
     });
     legendPanel.add(ui.Label('Relative susceptibility', STYLES.note));
@@ -648,21 +648,21 @@ function setActiveLayer(key) {
  */
 toolButtons.inspect = ui.Button({
   label: '⊕ Inspect', onClick: function () { setActiveTool('inspect'); },
-  style: {margin: '0 4px 0 0'}
+  style: {margin: '0', stretch: 'horizontal'}
 });
 toolButtons.transect = ui.Button({
   label: '╱ Transect', onClick: function () { setActiveTool('transect'); },
-  style: {margin: '0 4px 0 0'}
+  style: {margin: '0', stretch: 'horizontal'}
 });
 toolButtons.polygon = ui.Button({
   label: '◇ Polygon', onClick: function () { setActiveTool('polygon'); },
-  style: {margin: '0'}
+  style: {margin: '0', stretch: 'horizontal'}
 });
 
 /* About section: always visible, no toggle. */
 var REPO_URL = 'https://github.com/arshahvaran/bc-wildfire';
-var ABOUT_TEXT_STYLE = {fontSize: '11px', color: '#555555', margin: '0 0 6px 0'};
-var ABOUT_LINK_STYLE = {fontSize: '11px', color: '#1a73e8', margin: '0 0 6px 0'};
+var ABOUT_TEXT_STYLE = {fontSize: '14px', color: '#555555', margin: '0 0 8px 0'};
+var ABOUT_LINK_STYLE = {fontSize: '14px', color: '#1a73e8', margin: '0 0 8px 0'};
 var ABOUT_PARAGRAPHS = [
   'The score is a calibrated relative susceptibility. The model was trained on a 1:1 ' +
       'sample of ignition and non-ignition locations, so the score ranks likelihood on ' +
@@ -679,12 +679,12 @@ ABOUT_PARAGRAPHS.forEach(function (text) {
   aboutWidgets.push(ui.Label(text, ABOUT_TEXT_STYLE));
 });
 aboutWidgets.push(ui.Label('Source, licence and citation:',
-                           {fontSize: '11px', color: '#555555', margin: '0 0 2px 0'}));
+                           {fontSize: '14px', color: '#555555', margin: '0 0 4px 0'}));
 /* ui.Label takes (text, style, url); the third argument makes it a link. */
 aboutWidgets.push(ui.Label(REPO_URL, ABOUT_LINK_STYLE, REPO_URL));
 var aboutPanel = ui.Panel({
   widgets: aboutWidgets,
-  style: {margin: '8px 0 4px 0'}
+  style: {margin: '8px 0 4px 0', stretch: 'horizontal'}
 });
 
 /* Assemble the left control panel (~340 px). */
@@ -704,7 +704,8 @@ var controlPanel = ui.Panel({
     ui.Label('Tools', STYLES.section),
     ui.Panel({
       layout: ui.Panel.Layout.flow('horizontal'),
-      widgets: [toolButtons.inspect, toolButtons.transect, toolButtons.polygon]
+      widgets: [toolButtons.inspect, toolButtons.transect, toolButtons.polygon],
+      style: {stretch: 'horizontal', margin: '0'}
     }),
     resultsPanel,
     aboutPanel
