@@ -1,46 +1,67 @@
-# BC Wildfire Susceptibility Explorer - Earth Engine App
+# app/ - the Earth Engine App source
 
-`app.js` is the complete source of the Earth Engine App that serves the final
-map products of the wildfire susceptibility publication. It is written in the
-Code Editor dialect (client-side `ui.*` / `Map.*` API) and runs as a single
-script. It displays the susceptibility, class and Area-of-Applicability
-layers, and provides a click readout, a transect chart and polygon statistics.
-Predictor rasters are never added as map layers.
+`app.js` is the complete source of the **BC Wildfire Susceptibility Explorer**, the Earth
+Engine App that serves the final map products of the wildfire susceptibility publication. It
+is written in the Code Editor dialect (client-side `ui.*` and `Map.*` API) and runs as a
+single script: no npm, no bundler, no build step. Paste it and run it.
 
-## 1. Paste the script into the Code Editor
+Live app: <https://ee-arshahvaran.projects.earthengine.app/view/bc-wildfire>
 
-1. Open https://code.earthengine.google.com with the account that owns the
-   `ee-arshahvaran` Cloud project.
-2. In the Scripts tab, make a new script (NEW > File), for example
-   `wildfire_1/app`.
-3. Paste the full content of `app.js` into the editor and click Save.
+For the project overview see the [repository README](../README.md); for ingesting the rasters
+see [`docs/asset_upload_guide.md`](../docs/asset_upload_guide.md); for publishing and updating
+the app see [`docs/deployment.md`](../docs/deployment.md).
 
-## 2. Attach the assets
+## What the script builds
 
-1. In the Assets tab, select the `ee-arshahvaran` project and make the folder
-   `projects/ee-arshahvaran/assets/wildfire_1` (NEW > Folder).
-2. Upload the 13 single-band GeoTIFFs (NEW > Image Upload) with these exact
-   asset names: `susceptibility_mean`, `susceptibility_class`, `aoa_mask`,
-   `conformal_ambiguous`, `pred_ghm`, `pred_road_density`, `pred_dist_built`,
-   `pred_ndvi`, `pred_vpd`, `pred_wind`, `pred_lightning`, `pred_slope`,
-   `pred_fuel_type`.
-3. In each upload dialog, set the masking (nodata) value from the data
-   dictionary: -9999 for the float rasters and `pred_fuel_type`, 0 for
-   `susceptibility_class`, 255 for `aoa_mask` and `conformal_ambiguous`.
-4. For the categorical rasters (`susceptibility_class`, `aoa_mask`,
-   `conformal_ambiguous`, `pred_fuel_type`) set the pyramiding policy to MODE
-   so coarse-scale polygon statistics stay valid.
-5. The boundary table `projects/ee-arshahvaran/assets/bc_shapefile_gee`
-   already exists. Click Run to test the script against the assets.
+* Three product layers, one visible at a time: susceptibility (continuous 0 to 1),
+  susceptibility (five classes) and the Area of Applicability, with an opacity slider, a
+  basemap selector and a legend that follows the active layer.
+* Three mutually exclusive tools: **Inspect** (click readout for one pixel), **Transect**
+  (chart of susceptibility and class along a drawn line) and **Polygon** (statistics for a
+  drawn polygon).
+* An **About this app** section carrying the interpretation caveats, including that the score
+  is relative and not an annual ignition probability.
 
-## 3. Publish as an app
+## Disclosure boundary
 
-1. In the Code Editor, click Apps > NEW APP.
-2. Select the `ee-arshahvaran` Google Cloud project, set the app name to
-   "BC Wildfire Susceptibility Explorer", and choose this script (or a
-   repository that contains only it) as the source.
-3. In the publish dialog, the Code Editor lists the assets the app reads.
-   Use the option that shares those assets with the app (this grants the
-   app's service account read access). Do NOT make the assets public.
-4. Click Publish and open the app URL
-   (https://ee-arshahvaran.projects.earthengine.app/view/...) to verify.
+Do not relax these while editing `app.js`:
+
+* Predictor rasters are never added as map layers.
+* Per-pixel predictor values appear only in the click readout, and only for the nine entries
+  in the fixed `PREDICTORS` allowlist. Nothing iterates `bandNames()` to build that list.
+* The transect chart and its CSV carry susceptibility and class only.
+* Polygon statistics carry no predictor aggregates.
+
+## Editing the script
+
+Everything configurable lives in the `CONFIG` object at the top of the file: asset IDs,
+palettes, class names, the FBP fuel code lookup, the native grid transform, zoom limits, the
+transect point cap and the polygon scale thresholds. Change asset IDs there and nowhere else.
+
+The Code Editor sandbox is not a full modern JavaScript environment. It has no `Object.freeze`
+and no ES6 syntax, so the allowlist is a plain array and the file stays in ES5.
+
+Sampling uses the products' native grid (`CONFIG.nativeTransform`, EPSG:3005, 25.86 m) rather
+than a rounded scale, so a click reads the same pixel the source GeoTIFF holds. A rounded
+26 m scale can land one pixel away wherever the surface has a gradient.
+
+## Running it
+
+1. Open <https://code.earthengine.google.com> with the account that owns the `ee-arshahvaran`
+   Cloud project.
+2. Scripts tab, NEW > File, for example `wildfire_1/app`.
+3. Paste the whole of `app.js` and click **Save**.
+4. Click **Run**.
+
+The script expects the 13 images under `projects/ee-arshahvaran/assets/wildfire_1` and the
+boundary table `projects/ee-arshahvaran/assets/bc_shapefile_gee`. If those are not in place,
+follow [`docs/asset_upload_guide.md`](../docs/asset_upload_guide.md) and then run
+`tools/verify_assets.py`.
+
+## Publishing
+
+Apps > NEW APP publishes a saved snapshot of the script, and the app name sets the public URL.
+The step that is easy to get wrong is asset sharing: sharing the `wildfire_1` folder with the
+app does not share the images inside it, so each of the 13 assets must be shared with the
+app's service account individually. [`docs/deployment.md`](../docs/deployment.md) covers the
+dialog and gives a script that shares them all in one pass.

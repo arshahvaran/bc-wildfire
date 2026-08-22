@@ -1,6 +1,6 @@
-# Uploading the 13 rasters to Earth Engine — step-by-step guide
+# Uploading the 13 rasters to Earth Engine: a step-by-step guide
 
-*(Corrected 2026-08-27 to match the real "Upload a new image asset" dialog.)*
+*(Written against the "Upload a new image asset" dialog as of August 2026.)*
 
 You will upload 13 GeoTIFF files (about 20 GB total) through the Earth Engine Code
 Editor in your browser. No command line, no billing. Each upload is the same few
@@ -15,7 +15,7 @@ The **Asset ID** row has a dropdown and a text box:
 
     Asset ID:  [ projects/ee-arshahvaran/assets/  ▾ ]  [ Asset Name          ]
 
-The dropdown only ever lists **project roots** — it will never show `wildfire_1`,
+The dropdown only ever lists **project roots**. It will never show `wildfire_1`,
 and that is normal, not a bug. To put an asset inside a folder you type the folder
 into the **Asset Name** box as part of the path:
 
@@ -26,8 +26,8 @@ Every asset name in the table below must be typed with that `wildfire_1/` prefix
 
 ## One-time setup (already done)
 
-The folder `projects/ee-arshahvaran/assets/wildfire_1` exists and is empty —
-verified 2026-08-27. Nothing to do here.
+The folder `projects/ee-arshahvaran/assets/wildfire_1` already exists.
+Nothing to do here.
 
 ## The upload procedure (repeat 13 times)
 
@@ -39,15 +39,15 @@ verified 2026-08-27. Nothing to do here.
    **Asset Name** box type the value from the "Type in Asset Name" column
    (always beginning `wildfire_1/`).
 4. Skip the **Properties** section entirely (no start time, no end time, no
-   properties — none of them matter for this app).
+   properties; none of them matter for this app).
 5. Open **Advanced options**. Three fields, in this order:
-   * **Pyramiding policy** — a dropdown offering MEAN, MODE, MIN, MAX, SAMPLE.
+   * **Pyramiding policy**: a dropdown offering MEAN, MODE, MIN, MAX, SAMPLE.
      Set it to the value in the "Pyramiding" column. **This is the one setting that
      can go silently wrong.** MEAN is right for the smooth layers; the four rows
      marked **MODE** are categorical maps, where MODE stops Earth Engine from
      averaging class codes into meaningless in-between values when zoomed out.
-   * **Masking mode** — set to **No-data value**.
-   * **No-data value** — type the number from the "No-data" column. (This tells
+   * **Masking mode**: set to **No-data value**.
+   * **No-data value**: type the number from the "No-data" column. (This tells
      Earth Engine which pixels are empty; get it wrong and the ocean reads as
      −9999 instead of "no data".)
 6. Click **UPLOAD**. A task appears in the **Tasks** tab (top right).
@@ -87,19 +87,19 @@ not beside it. Click it: the *Asset details* panel should report a single band
 
 ## If something goes wrong
 
-* **The asset landed in the wrong place** (beside `wildfire_1` instead of inside) —
-  right-click it → **Rename**, and change the path to include `wildfire_1/`.
+* **The asset landed in the wrong place** (beside `wildfire_1` instead of inside).
+  Right-click it → **Rename**, and change the path to include `wildfire_1/`.
   Rename moves an asset in Earth Engine; you do not have to upload it again.
-* **Typo in the name** — same fix: right-click → Rename. The names must match the
+* **Typo in the name**: same fix, right-click → Rename. The names must match the
   table exactly, because the app code refers to them.
-* **Wrong no-data value or wrong pyramiding** — these cannot be changed after
+* **Wrong no-data value or wrong pyramiding**: these cannot be changed after
   ingestion. Right-click → **Delete**, then upload that file again.
-* **A task shows FAILED in the Tasks tab** — hover it for the reason; nearly always
+* **A task shows FAILED in the Tasks tab**: hover it for the reason; nearly always
   a cancelled transfer. Just repeat that row.
 
 ## When you are done
 
-Tell Claude "uploads done". The verification script (`tools/verify_assets.py`) then
+Then run the verification script (`tools/verify_assets.py`), which
 checks every asset: that all 13 exist under the right names, that the projection and
 25.86 m resolution survived, that sampled values match the original files on your
 disk at eight test points across BC, and that the four MODE layers really were

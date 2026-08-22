@@ -1,0 +1,58 @@
+cff-version: 1.2.0
+title: BC Wildfire Susceptibility Explorer
+message: >-
+  If you use this software, please cite both the software itself and the
+  manuscript listed under preferred-citation.
+type: software
+abstract: >-
+  An interactive Google Earth Engine application that serves calibrated,
+  uncertainty-aware wildfire susceptibility map products for British Columbia:
+  a relative susceptibility score from 0 to 1, a five-class equal-area version
+  of that score, and an Area of Applicability mask. The application provides a
+  per-pixel click readout of the nine model predictors, a transect chart and
+  polygon statistics. It serves the finished map products only and does not
+  distribute the input rasters.
+authors:
+  - given-names: Ali Reza
+    family-names: Shahvaran
+  - given-names: Roohollah
+    family-names: Noori
+  - given-names: Kaveh
+    family-names: Madani
+  - given-names: Mojtaba
+    family-names: Sadegh
+  - given-names: Amir
+    family-names: AghaKouchak
+repository-code: https://github.com/arshahvaran/bc-wildfire
+url: https://ee-arshahvaran.projects.earthengine.app/view/bc-wildfire
+license:
+  - MIT
+  - CC-BY-NC-4.0
+keywords:
+  - wildfire susceptibility
+  - British Columbia
+  - Google Earth Engine
+  - machine learning
+  - LightGBM
+  - uncertainty quantification
+  - area of applicability
+  - conformal prediction
+preferred-citation:
+  type: article
+  title: >-
+    Uncertainty-aware wildfire susceptibility for British Columbia: a
+    reproducible machine-learning workflow and an interactive Earth Engine tool
+  authors:
+    - given-names: Ali Reza
+      family-names: Shahvaran
+    - given-names: Roohollah
+      family-names: Noori
+    - given-names: Kaveh
+      family-names: Madani
+    - given-names: Mojtaba
+      family-names: Sadegh
+    - given-names: Amir
+      family-names: AghaKouchak
+  year: 2026
+  status: in-preparation
+  notes: Manuscript in preparation.

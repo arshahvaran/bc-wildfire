@@ -24,7 +24,6 @@ var ASSET_ROOT = 'projects/ee-arshahvaran/assets/wildfire_1/';
 
 var CONFIG = {
   assets: {
-    boundary: 'projects/ee-arshahvaran/assets/bc_shapefile_gee',
     susceptibility: ASSET_ROOT + 'susceptibility_mean',
     susceptibilityClass: ASSET_ROOT + 'susceptibility_class',
     aoaMask: ASSET_ROOT + 'aoa_mask',
@@ -80,7 +79,7 @@ var CONFIG = {
   transect: {maxPoints: 400, minSpacingM: 26, maxErrorM: 10},
   polygon: {largeAreaKm2: 200000, smallScaleM: 100, largeScaleM: 300,
             maxPixels: 1e9, areaMaxErrorM: 100},
-  defaultOpacity: 0.8,
+  defaultOpacity: 0.9,
   panelWidth: '340px'
 };
 
@@ -123,7 +122,15 @@ var STYLES = {
 
 /* ===== 2. DATA - images renamed to stable keys ===== */
 
-var boundary = ee.FeatureCollection(CONFIG.assets.boundary);
+/*
+ * The province outline comes from the public GAUL level-1 dataset, not from a
+ * project asset. The old bc_shapefile_gee asset is the study-area / raster
+ * footprint: its southern bound reaches 47.79 N, so the drawn outline cut
+ * across Washington State. GAUL gives the real province (2 features, lon
+ * -139.05..-114.05, lat 48.30..60.00) and needs no asset permissions.
+ */
+var boundary = ee.FeatureCollection('FAO/GAUL/2015/level1')
+    .filter(ee.Filter.eq('ADM1_NAME', 'British Columbia / Colombie-Britannique'));
 var susceptibility = ee.Image(CONFIG.assets.susceptibility).rename('susceptibility');
 var suscClass = ee.Image(CONFIG.assets.susceptibilityClass).rename('class');
 var aoaMask = ee.Image(CONFIG.assets.aoaMask).rename('aoa');
@@ -170,7 +177,10 @@ Map.setOptions('Subdued', {Subdued: SUBDUED_STYLE});
 Map.setControlVisibility({all: false, zoomControl: true, scaleControl: true});
 Map.setLocked(false, CONFIG.minZoom, CONFIG.maxZoom);
 Map.style().set('cursor', 'crosshair');
-Map.centerObject(boundary);
+// Zoom 5 fills the map with the province: BC spans 25 degrees of longitude and
+// 11.7 of latitude, about 560 x 455 px at zoom 5, so the outline sits inside a
+// normal viewport with a small margin. Zoom 6 would crop the north and east.
+Map.centerObject(boundary, 5);
 
 /** Display order and definitions of the three product layers. */
 var LAYER_KEYS = ['continuous', 'classes', 'aoa'];
@@ -629,57 +639,58 @@ function setActiveLayer(key) {
   renderLegend(key);
 }
 
-/* Tool buttons (mutually exclusive; active one is highlighted). */
+/*
+ * Tool buttons (mutually exclusive; active one is highlighted).
+ * The glyphs are plain geometric unicode (circled plus, diagonal line, white
+ * diamond), not emoji, so every browser renders them as text at label weight.
+ */
 toolButtons.inspect = ui.Button({
-  label: 'Inspect', onClick: function () { setActiveTool('inspect'); },
+  label: '⊕ Inspect', onClick: function () { setActiveTool('inspect'); },
   style: {margin: '0 4px 0 0'}
 });
 toolButtons.transect = ui.Button({
-  label: 'Transect', onClick: function () { setActiveTool('transect'); },
+  label: '╱ Transect', onClick: function () { setActiveTool('transect'); },
   style: {margin: '0 4px 0 0'}
 });
 toolButtons.polygon = ui.Button({
-  label: 'Polygon', onClick: function () { setActiveTool('polygon'); },
+  label: '◇ Polygon', onClick: function () { setActiveTool('polygon'); },
   style: {margin: '0'}
 });
 
-/* Collapsible About section. */
+/* About section: always visible, no toggle. */
+var REPO_URL = 'https://github.com/arshahvaran/bc-wildfire';
+var ABOUT_TEXT_STYLE = {fontSize: '11px', color: '#555555', margin: '0 0 6px 0'};
+var ABOUT_LINK_STYLE = {fontSize: '11px', color: '#1a73e8', margin: '0 0 6px 0'};
 var ABOUT_PARAGRAPHS = [
-  'The score is a calibrated RELATIVE susceptibility. The model was trained on a 1:1 ' +
+  'The score is a calibrated relative susceptibility. The model was trained on a 1:1 ' +
       'sample of ignition and non-ignition locations, so the score ranks likelihood on ' +
       'that sampling base rate. It is not an annual ignition probability.',
   'Wildfire record coordinates are approximate. Interpret fine-scale patterns with care.',
-  'The five classes are quantile (equal-area) breaks of the score. The Area of ' +
-      'Applicability flags pixels whose predictor values fall outside the training ' +
-      'range. The conformal layer flags pixels where a 90%-coverage prediction set ' +
-      'keeps both outcomes.',
+  'The five classes are quantile (equal-area) breaks of the score.',
+  'The Area of Applicability flags pixels whose predictor values fall outside the ' +
+      'training range.',
   'This app serves the final map products only and does not distribute the input ' +
-      'rasters. Predictor values are shown for a clicked pixel only.',
-  'Citation: [CITATION - manuscript in preparation]'
+      'rasters. Predictor values are shown for a clicked pixel only.'
 ];
-var aboutShown = false;
-var aboutPanel = ui.Panel({
-  widgets: ABOUT_PARAGRAPHS.map(function (text) {
-    return ui.Label(text, {fontSize: '11px', color: '#555555', margin: '0 0 6px 0'});
-  }),
-  style: {shown: false, margin: '0 0 4px 0'}
+var aboutWidgets = [ui.Label('About this app', STYLES.section)];
+ABOUT_PARAGRAPHS.forEach(function (text) {
+  aboutWidgets.push(ui.Label(text, ABOUT_TEXT_STYLE));
 });
-var aboutToggle = ui.Button({
-  label: 'About this app ▸',
-  onClick: function () {
-    aboutShown = !aboutShown;
-    aboutPanel.style().set('shown', aboutShown);
-    aboutToggle.setLabel(aboutShown ? 'About this app ▾' : 'About this app ▸');
-  },
-  style: {margin: '8px 0 0 0', stretch: 'horizontal'}
+aboutWidgets.push(ui.Label('Source, licence and citation:',
+                           {fontSize: '11px', color: '#555555', margin: '0 0 2px 0'}));
+/* ui.Label takes (text, style, url); the third argument makes it a link. */
+aboutWidgets.push(ui.Label(REPO_URL, ABOUT_LINK_STYLE, REPO_URL));
+var aboutPanel = ui.Panel({
+  widgets: aboutWidgets,
+  style: {margin: '8px 0 4px 0'}
 });
 
 /* Assemble the left control panel (~340 px). */
 var controlPanel = ui.Panel({
   widgets: [
     ui.Label('BC Wildfire Susceptibility Explorer', STYLES.title),
-    ui.Label('Calibrated wildfire ignition susceptibility for British ' +
-             'Columbia, with per-pixel uncertainty.', STYLES.caption),
+    ui.Label('Calibrated wildfire susceptibility for British Columbia, ' +
+             'with per-pixel uncertainty.', STYLES.caption),
     ui.Label('Layer', STYLES.section),
     layerSelect,
     ui.Label('Opacity', STYLES.note),
@@ -694,7 +705,6 @@ var controlPanel = ui.Panel({
       widgets: [toolButtons.inspect, toolButtons.transect, toolButtons.polygon]
     }),
     resultsPanel,
-    aboutToggle,
     aboutPanel
   ],
   style: {width: CONFIG.panelWidth, padding: '8px'}

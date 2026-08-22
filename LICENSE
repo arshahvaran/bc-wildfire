@@ -1,0 +1,80 @@
+BC Wildfire Susceptibility Explorer
+Copyright (c) 2026 Ali Reza Shahvaran
+
+This repository is released under two licences. Which one applies depends on
+what part of the repository you are using.
+
+===============================================================================
+1. CODE: MIT Licence
+===============================================================================
+
+Applies to all source code in this repository, namely:
+
+    app/      the Earth Engine App source (app.js)
+    tools/    the asset verification script (verify_assets.py)
+
+together with any configuration files at the repository root, such as
+.gitignore and CITATION.cff.
+
+Full terms:
+
+MIT License
+
+Copyright (c) 2026 Ali Reza Shahvaran
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+===============================================================================
+2. DOCUMENTATION AND FIGURES: CC BY-NC 4.0
+===============================================================================
+
+Applies to all documentation, text, figures and images in this repository,
+namely:
+
+    README.md
+    docs/     including asset_upload_guide.md and deployment.md
+    app/README.md
+    assets/   logo and thumbnail images
+
+These materials are licensed under the Creative Commons
+Attribution-NonCommercial 4.0 International Licence (CC BY-NC 4.0).
+
+You are free to share and adapt this material, provided that you give
+appropriate credit, link to the licence, and indicate if changes were made,
+and provided that you do not use the material for commercial purposes.
+
+Human-readable summary:
+    https://creativecommons.org/licenses/by-nc/4.0/
+
+Full legal code:
+    https://creativecommons.org/licenses/by-nc/4.0/legalcode
+
+Attribution should name the tool, the author and the repository, for example:
+
+    "BC Wildfire Susceptibility Explorer" by Ali Reza Shahvaran,
+    https://github.com/arshahvaran/bc-wildfire, CC BY-NC 4.0.
+
+===============================================================================
+3. DATA
+===============================================================================
+
+Neither licence covers the Earth Engine assets that the application reads.
+Those map products are served through the published application and are not
+redistributed in this repository. The input datasets from which they were
+derived keep the licences of their original providers.
