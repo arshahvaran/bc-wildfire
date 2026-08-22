@@ -235,9 +235,12 @@ host whose own title and URL you control.
 
 The application therefore carries its full name inside the interface instead. The control
 panel is headed by the square mark from `assets/icon.png`, inlined as a data URI because
-`ui.Label`'s `imageUrl` accepts only data URIs and gstatic.com icons, with the title set
-beside it as text.
+`ui.Label`'s `imageUrl` accepts only data URIs and gstatic.com icons. The title and the
+caption sit in a vertical panel beside it, so the caption begins at the title's left edge
+rather than under the mark.
 
 A label's `style.width` **clips** its image, it does not scale it, so an inlined image must
 be shipped at the exact size it is to appear at. A wordmark sized for a wider panel simply
-runs off the edge with its right-hand end cut away.
+runs off the edge with its right-hand end cut away. The mark is therefore inlined at
+72 x 72, its display size: **to resize it, regenerate the base64 string at the new size**,
+because widening the label alone only reveals more empty space or crops the image.
