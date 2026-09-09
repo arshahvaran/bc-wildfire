@@ -40,8 +40,9 @@ keywords:
 preferred-citation:
   type: article
   title: >-
-    Uncertainty-aware wildfire susceptibility for British Columbia: a
-    reproducible machine-learning workflow and an interactive Earth Engine tool
+    Uncertainty-aware wildfire susceptibility for British Columbia at 25 m
+    resolution: a reproducible machine-learning workflow and an interactive
+    Earth Engine tool
   authors:
     - given-names: Ali Reza
       family-names: Shahvaran

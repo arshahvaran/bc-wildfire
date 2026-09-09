@@ -1,33 +1,29 @@
-# BC Wildfire Susceptibility Explorer (BCWSE)
+<p align="center">
+  <img src="assets/logo.png" alt="BC Wildfire Susceptibility Explorer" width="150">
+</p>
 
-[![Live app](https://img.shields.io/badge/Live%20app-Earth%20Engine-0b6e99)](https://ee-arshahvaran.projects.earthengine.app/view/bc-wildfire)
-[![Version](https://img.shields.io/badge/version-1.0-informational)](https://github.com/arshahvaran/bc-wildfire/tags)
-[![CC BY-NC 4.0][cc-by-nc-shield]][cc-by-nc]
+<h1 align="center">BC Wildfire Susceptibility Explorer</h1>
+
+<p align="center">
+  <a href="https://ee-arshahvaran.projects.earthengine.app/view/bc-wildfire"><img src="https://img.shields.io/badge/Live%20app-Earth%20Engine-0b6e99" alt="Live app"></a>
+  <a href="https://github.com/arshahvaran/bc-wildfire/tags"><img src="https://img.shields.io/badge/version-1.0-informational" alt="Version"></a>
+  <a href="https://creativecommons.org/licenses/by-nc/4.0/"><img src="https://img.shields.io/badge/License-CC%20BY--NC%204.0-lightgrey.svg" alt="CC BY-NC 4.0"></a>
+</p>
 
 **An Earth Engine web app for reading calibrated, uncertainty-aware wildfire ignition
-susceptibility maps of British Columbia.**
+susceptibility maps of British Columbia at ~25 m.**
 
 **Live app:** https://ee-arshahvaran.projects.earthengine.app/view/bc-wildfire
 
-BCWSE accompanies a study that maps wildfire ignition susceptibility across British
+The app accompanies a study that maps wildfire ignition susceptibility across British
 Columbia from nine physical, climatic and human predictors, and that reports where the
 model applies as well as what it predicts: a calibrated relative susceptibility score, a
 five-class equal-area version of that score, an Area of Applicability mask, and a
 conformal flag for pixels whose 90% prediction set keeps both outcomes.
 
-Everything (layer switching, the per-pixel readout, transects, polygon statistics) is
-computed in Earth Engine on the native 25.9 m grid. The app serves the finished map
-products only. **The predictor rasters are not distributed**; their values are shown for a
-clicked pixel and nowhere else.
-
-## Contents
-
-- [Key features](#key-features)
-- [Getting started](#getting-started)
-- [Map products](#map-products)
-- [Technical validation](#technical-validation)
-- [How to cite](#how-to-cite)
-- [License](#license)
+Everything is computed in Earth Engine on the native ~25 m grid. The app serves the
+finished map products only. **The predictor rasters are not distributed**; their values
+are shown for a clicked pixel and nowhere else.
 
 ## Key features
 
@@ -48,20 +44,9 @@ inside it, and the class breakdown, at a scale chosen from the polygon's size.
 
 ## Getting started
 
-Use the live app directly (nothing to install):
-https://ee-arshahvaran.projects.earthengine.app/view/bc-wildfire. No Earth Engine account
-and no sign-in are needed.
+Open the app: https://ee-arshahvaran.projects.earthengine.app/view/bc-wildfire
 
-To run the source yourself, in the [Code Editor](https://code.earthengine.google.com):
-
-1. Create a script and paste the whole of [`app/app.js`](app/app.js) into it.
-2. Click **Run**. One self-contained script, no build step and no dependencies.
-3. Point `ASSET_ROOT` and the `CONFIG.assets` block at your own copies to serve different
-   products; every asset ID, palette, label and limit lives in that one object.
-
-Ingesting the rasters is covered in
-[`docs/asset_upload_guide.md`](docs/asset_upload_guide.md), and publishing in
-[`docs/deployment.md`](docs/deployment.md).
+Nothing to install, no Earth Engine account, no sign-in.
 
 ## Map products
 
@@ -71,22 +56,14 @@ Ingesting the rasters is covered in
 | Susceptibility (five classes) | quantile, equal-area classes of that score |
 | Area of Applicability | pixels whose predictors fall outside the training range |
 
-Province-wide, 25.9 m pixels, EPSG:3005. The score ranks relative likelihood on a 1:1
-ignition / non-ignition sampling base rate; it is not an annual ignition probability.
-
-## Technical validation
-
-[`tools/verify_assets.py`](tools/verify_assets.py) checks every ingested asset before the
-app is allowed to serve it: that all 13 exist under the expected names, that the
-projection and the 25.86 m grid survived ingestion, that values sampled from Earth Engine
-match the source GeoTIFFs on disk at eight test points across British Columbia when read
-on the assets' own `crsTransform`, and that the four categorical layers were ingested with
-MODE pyramiding rather than MEAN, which it detects from the blended values a wrong setting
-produces at coarse zoom.
+Province-wide, ~25 m pixels, EPSG:3005.
 
 ## How to cite
 
 *Reference paper will be added here once published.*
+
+For the tool itself, use [`CITATION.cff`](CITATION.cff), which GitHub renders as a "Cite
+this repository" button.
 
 ## License
 
@@ -97,4 +74,3 @@ This work is licensed under a
 
 [cc-by-nc]: https://creativecommons.org/licenses/by-nc/4.0/
 [cc-by-nc-image]: https://licensebuttons.net/l/by-nc/4.0/88x31.png
-[cc-by-nc-shield]: https://img.shields.io/badge/License-CC%20BY--NC%204.0-lightgrey.svg
