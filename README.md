@@ -10,8 +10,8 @@
   <a href="https://creativecommons.org/licenses/by-nc/4.0/"><img src="https://img.shields.io/badge/License-CC%20BY--NC%204.0-lightgrey.svg" alt="CC BY-NC 4.0"></a>
 </p>
 
-**An Earth Engine web app for reading calibrated, uncertainty-aware wildfire ignition
-susceptibility maps of British Columbia at ~25 m.**
+**An Earth Engine app for reading calibrated, uncertainty-aware wildfire ignition
+susceptibility maps of British Columbia.**
 
 **Live app:** https://ee-arshahvaran.projects.earthengine.app/view/bc-wildfire
 
