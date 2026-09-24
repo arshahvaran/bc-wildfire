@@ -15,8 +15,13 @@ abstract: >-
 authors:
   - given-names: Ali Reza
     family-names: Shahvaran
+    orcid: 'https://orcid.org/0000-0001-7846-054X'
   - given-names: Roohollah
     family-names: Noori
+  - given-names: Sayed M.
+    family-names: Bateni
+  - given-names: Changhyun
+    family-names: Jun
   - given-names: Kaveh
     family-names: Madani
   - given-names: Mojtaba
@@ -40,14 +45,19 @@ keywords:
 preferred-citation:
   type: article
   title: >-
-    Uncertainty-aware wildfire susceptibility for British Columbia at 25 m
-    resolution: a reproducible machine-learning workflow and an interactive
-    Earth Engine tool
+    Uncertainty-aware wildfire ignition susceptibility for British Columbia at
+    ~25 m resolution: a machine-learning workflow and an interactive Earth
+    Engine tool
   authors:
     - given-names: Ali Reza
       family-names: Shahvaran
+      orcid: 'https://orcid.org/0000-0001-7846-054X'
     - given-names: Roohollah
       family-names: Noori
+    - given-names: Sayed M.
+      family-names: Bateni
+    - given-names: Changhyun
+      family-names: Jun
     - given-names: Kaveh
       family-names: Madani
     - given-names: Mojtaba
