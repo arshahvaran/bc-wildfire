@@ -14,8 +14,8 @@
  *   - The transect chart/CSV carries susceptibility and class only.
  *   - Polygon statistics carry no predictor aggregates.
  *
- * Paste this file into the Code Editor and publish with Apps > NEW APP
- * (see README.md alongside this file).
+ * Paste this file into the Code Editor script users/arshahvaran/wildfire_app:app,
+ * save it, and publish with Apps > bc-wildfire > Update app.
  */
 
 /* ===== 1. CONFIG - every asset ID, palette, name map and limit lives here ===== */
@@ -96,8 +96,8 @@ var PREDICTORS = [
   {key: 'road_density', label: 'Road density', format: function (v) { return v.toFixed(2) + ' km/km²'; }},
   {key: 'dist_built', label: 'Distance to built areas', format: function (v) { return (v / 1000).toFixed(2) + ' km'; }},
   {key: 'ndvi', label: 'NDVI', format: function (v) { return v.toFixed(3); }},
-  {key: 'vpd', label: 'Vapour pressure deficit', format: function (v) { return v.toFixed(2) + ' kPa'; }},
-  {key: 'wind', label: 'Wind speed', format: function (v) { return v.toFixed(1) + ' m/s'; }},
+  {key: 'vpd', label: 'Max vapor pressure deficit', format: function (v) { return v.toFixed(2) + ' kPa'; }},
+  {key: 'wind', label: 'Max wind speed', format: function (v) { return v.toFixed(1) + ' m/s'; }},
   {key: 'lightning', label: 'Lightning density', format: function (v) { return v.toFixed(2) + ' strokes/km²/yr'; }},
   {key: 'slope', label: 'Slope', format: function (v) { return v.toFixed(1) + '°'; }},
   {key: 'fuel_type', label: 'FBP fuel type', format: function (v) {
@@ -558,7 +558,7 @@ function renderReadout(coords, values) {
     card.push(ui.Label('Within the Area of Applicability', STYLES.body));
   } else if (values.aoa === 0) {
     card.push(ui.Label(
-        'Extrapolation ' + EM_DASH + ' predictor values here are outside the training range',
+        'Extrapolation ' + EM_DASH + ' predictor values here are too dissimilar from the training data',
         {fontSize: '15px', color: CONFIG.aoaExtrapolationColor, margin: '5px 0 0 0'}));
   } else {
     card.push(row('Area of Applicability', EM_DASH));
@@ -987,8 +987,8 @@ var ABOUT_PARAGRAPHS = [
       'that sampling base rate. It is not an annual ignition probability.',
   'Wildfire record coordinates are approximate. Interpret fine-scale patterns with care.',
   'The five classes are quantile (equal-area) breaks of the score.',
-  'The Area of Applicability flags pixels whose predictor values fall outside the ' +
-      'training range.',
+  'The Area of Applicability flags pixels whose predictor values are too dissimilar from the ' +
+      'training data.',
   'This app serves the final map products only and does not distribute the input ' +
       'rasters. Predictor values are shown for a clicked pixel only.'
 ];
