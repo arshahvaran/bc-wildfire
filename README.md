@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://ee-arshahvaran.projects.earthengine.app/view/bc-wildfire"><img src="https://img.shields.io/badge/Live%20app-Earth%20Engine-0b6e99" alt="Live app"></a>
-  <a href="https://github.com/arshahvaran/bc-wildfire/tags"><img src="https://img.shields.io/badge/version-1.1-informational" alt="Version"></a>
+  <a href="https://github.com/arshahvaran/bc-wildfire/tags"><img src="https://img.shields.io/badge/version-1.2-informational" alt="Version"></a>
   <a href="https://creativecommons.org/licenses/by-nc/4.0/"><img src="https://img.shields.io/badge/License-CC%20BY--NC%204.0-lightgrey.svg" alt="CC BY-NC 4.0"></a>
 </p>
 
@@ -19,10 +19,11 @@ The app accompanies a study that maps wildfire ignition susceptibility across Br
 Columbia from nine physical, climatic and human predictors, and that reports where the
 model applies as well as what it predicts: a calibrated relative susceptibility score, a
 five-class equal-area version of that score, an Area of Applicability mask, and a
-conformal flag for pixels whose 90% prediction set keeps both outcomes.
+conformal flag for pixels whose prediction set at the 90% coverage target keeps both outcomes.
 
-The map products were computed offline on the native ~25 m grid and are served from Earth
-Engine. Click readouts and transects read that grid; polygon statistics use a 100 m or 300 m scale. The app serves the
+The map products were computed offline and are served from Earth Engine on the native
+~25 m grid. Click readouts and transects read that grid; polygon statistics use a 100 m or 300 m scale.
+The Area of Applicability rests on a dissimilarity computed at 259 m, so it changes in 259 m steps. The app serves the
 finished map products only. **The predictor rasters are not distributed**; their values
 are shown for a clicked pixel and nowhere else.
 
@@ -34,14 +35,15 @@ slider, and a subdued, satellite or hybrid basemap.
 
 **Click readout.** Susceptibility, class, applicability and conformal ambiguity at the
 clicked pixel, then all nine predictor values in their own units (human modification, road
-density, distance to built areas, NDVI, maximum vapor pressure deficit, maximum wind speed, lightning
-density, slope, FBP fuel type).
+density, distance to built-up land, NDVI, maximum vapor pressure deficit, maximum wind speed, lightning
+stroke density, slope, FBP fuel type).
 
 **Transect.** Draw a line and read susceptibility and class along it as a chart, sampled
 at even spacing with a 400-point cap and a 26 m floor, with a CSV download.
 
 **Polygon.** Draw a polygon and get its area, the mean and median susceptibility
-inside it, and the class breakdown, at a scale chosen from the polygon's size.
+inside it, the class breakdown, and the shares of its area inside the Area of
+Applicability and with a confident conformal set, at a scale chosen from the polygon's size.
 
 ## Getting started
 

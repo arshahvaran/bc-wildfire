@@ -92,13 +92,13 @@ var CONFIG = {
 // allowlist is a plain array. It is still the ONLY place predictor bands are
 // enumerated - never iterate bandNames() to build this list.
 var PREDICTORS = [
-  {key: 'ghm', label: 'Human modification (gHM)', format: function (v) { return v.toFixed(2); }},
+  {key: 'ghm', label: 'Human modification (gHM)', format: function (v) { return v.toFixed(3); }},
   {key: 'road_density', label: 'Road density', format: function (v) { return v.toFixed(2) + ' km/km²'; }},
-  {key: 'dist_built', label: 'Distance to built areas', format: function (v) { return (v / 1000).toFixed(2) + ' km'; }},
+  {key: 'dist_built', label: 'Distance to built-up land', format: function (v) { return (v / 1000).toFixed(2) + ' km'; }},
   {key: 'ndvi', label: 'NDVI', format: function (v) { return v.toFixed(3); }},
   {key: 'vpd', label: 'Max vapor pressure deficit', format: function (v) { return v.toFixed(2) + ' kPa'; }},
   {key: 'wind', label: 'Max wind speed', format: function (v) { return v.toFixed(1) + ' m/s'; }},
-  {key: 'lightning', label: 'Lightning density', format: function (v) { return v.toFixed(2) + ' strokes/km²/yr'; }},
+  {key: 'lightning', label: 'Lightning stroke density', format: function (v) { return v.toFixed(3) + ' strokes/km²/yr'; }},
   {key: 'slope', label: 'Slope', format: function (v) { return v.toFixed(1) + '°'; }},
   {key: 'fuel_type', label: 'FBP fuel type', format: function (v) {
     var name = CONFIG.fuelNames[Math.round(v)];
@@ -564,7 +564,7 @@ function renderReadout(coords, values) {
     card.push(row('Area of Applicability', EM_DASH));
   }
   if (values.conformal === 0) {
-    card.push(ui.Label('Confident: a single outcome survives at 90% coverage', STYLES.body));
+    card.push(ui.Label('Confident: a single outcome at the 90% coverage target', STYLES.body));
   } else if (values.conformal === 1) {
     card.push(ui.Label('Ambiguous: both outcomes retained',
                        {fontSize: '15px', color: '#b26a00', margin: '3px 0 0 0'}));
@@ -990,13 +990,14 @@ var ABOUT_PARAGRAPHS = [
   'The Area of Applicability flags pixels whose predictor values are too dissimilar from the ' +
       'training data.',
   'This app serves the final map products only and does not distribute the input ' +
-      'rasters. Predictor values are shown for a clicked pixel only.'
+      'rasters. Predictor values are shown for a clicked pixel only. A dash means the ' +
+      'layer has no value there; the model used the nearest valid value from a 259 m copy.'
 ];
 var aboutWidgets = [];   /* the toggle button below is the heading */
 ABOUT_PARAGRAPHS.forEach(function (text) {
   aboutWidgets.push(ui.Label(text, ABOUT_TEXT_STYLE));
 });
-aboutWidgets.push(ui.Label('Source, licence and citation:',
+aboutWidgets.push(ui.Label('Source, license and citation:',
                            {fontSize: '14px', color: '#555555', margin: '0 0 4px 0'}));
 /* ui.Label takes (text, style, url); the third argument makes it a link. */
 aboutWidgets.push(ui.Label(REPO_URL, ABOUT_LINK_STYLE, REPO_URL));
